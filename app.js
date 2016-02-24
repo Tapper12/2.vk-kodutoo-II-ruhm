@@ -17,9 +17,8 @@
 
     // KÕIK MUUTUJAD, mis on üldised ja muudetavad
     this.currentRoute = null; // hoian meeles mis lehel olen (home-view, ...)
-    this.interval = null;
     //Purgid
-    this.jars = []
+    this.jars = [];
 
 
 
@@ -27,10 +26,12 @@
     this.init();
   };
 
+  window.Moosipurk = Moosipurk;
+
   // kirjeldatud kõik lehed
   Moosipurk.routes = {
     "home-view": {
-      render: function(){
+      'render': function(){
         // käivitan siis kui jõuan lehele
         console.log('JS avalehel');
 
@@ -49,13 +50,13 @@
       }
     },
     "list-view": {
-      render: function(){
+      'render': function(){
         console.log('JS loendi lehel');
 
       }
     },
     "manage-view": {
-      render: function(){
+      'render': function(){
         console.log('JS halduse lehel');
 
       }
@@ -103,6 +104,32 @@
     },
     bindEvents: function(){
       document.querySelector('.add-new-jar').addEventListener('click', this.addNewClick.bind(this));
+
+      //Kuulan trükkimist
+      document.querySelector('#search').addEventListener('keyup', this.search.bind(this));
+    },
+
+    search: function(event){
+      //Mis on otsikastis
+      var needle = document.querySelector('#search').value.toLowerCase();
+      console.log(needle);
+      var list = document.querySelectorAll('ul.list-of-jars li');
+      console.log(list);
+      for(var i = 0; i < list.length; i++){
+        var li = list[i];
+        var stack = li.querySelector('.content').innerHTML.toLowerCase();
+
+        if(stack.indexOf(needle) !== -1){
+          //Olemas
+          li.style.display = 'list-item';
+        }else{
+          //Ei ole
+
+          li.style.display = 'none';
+
+        }
+
+      }
 
     },
     addNewClick: function(event){
