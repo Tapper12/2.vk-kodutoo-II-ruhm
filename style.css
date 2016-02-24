@@ -87,7 +87,8 @@ main > *:target ~ * {
 }
 .title,
 .ingredients,
-.date {
+.date,
+#search {
     width: 100%;
     margin-bottom: 10px;
     margin-top: 4px;

@@ -18,6 +18,8 @@
     // KÕIK MUUTUJAD, mis on üldised ja muudetavad
     this.currentRoute = null; // hoian meeles mis lehel olen (home-view, ...)
     this.interval = null;
+    //Purgid
+    this.jars = []
 
 
 
@@ -78,36 +80,60 @@
 
       }
 
+      //Saan kätte kraami Local Storage'st
+      if(localStorage.jars){
+        //Võtan stringi ja teen objektideks
+        this.jars = JSON.parse(localStorage.jars);
+
+        //tekitan loendi
+        this.jars.forEach(function(jar){
+
+          var new_jar = new Jar(jar.title, jar. ingredients, jar.date);
+
+          var li = new_jar.createHtmlElement();
+          document.querySelector('.list-of-jars').appendChild(li);
+
+        });
+
+
+      }
 
       // hakka kuulama hiireklõpse
-      this.bindMouseEvents();
+      this.bindEvents();
     },
-    bindMouseEvents: function(){
+    bindEvents: function(){
       document.querySelector('.add-new-jar').addEventListener('click', this.addNewClick.bind(this));
+
     },
     addNewClick: function(event){
       // lisa uus purk
       var title = document.querySelector('.title').value;
       var ingredients = document.querySelector('.ingredients').value;
       var date = document.querySelector('.date').value;
+
+
+
       console.log(title + ' ' + ingredients + ' ' + date);
 
-      if(title.value || ingredients.value || date.value === ""){
-        console.log("Midagi on puudu");
+      var new_jar = new Jar(title, ingredients, date);
 
-      }else{
-        var new_jar = new Jar(title, ingredients, date);
-        var li = new_jar.createHtmlElement();
-        document.querySelector('.list-of-jars').appendChild(li);
-        console.log("salvestatud");
-      }
+      //Lisan massiivi
+      this.jars.push(new_jar);
+      console.log(JSON.stringify(this.jars));
+      //Stringina salvestan LocalStoragisse
+      localStorage.setItem('jars', JSON.stringify(this.jars));
 
-
+      var li = new_jar.createHtmlElement();
+      document.querySelector('.list-of-jars').appendChild(li);
+      console.log("salvestatud");
     },
+
+
+
     routeChange: function(event){
 
       // slice võtab võtab # ära #home-view >> home-view
-      this.currentRoute = window.location.hash.slice(1);
+      this.currentRoute = location.hash.slice(1);
 
       // kas leht on olemas
       if(this.routes[this.currentRoute]){
