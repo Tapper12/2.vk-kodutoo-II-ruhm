@@ -56,7 +56,7 @@
    Autopark.prototype = {
 
      init: function(){
-       console.log('Rakendus lÃ¤ks tÃ¶Ã¶le');
+       //console.log('Rakendus lÃ¤ks tÃ¶Ã¶le');
 
        //kuulan aadressirea vahetust
        window.addEventListener('hashchange', this.routeChange.bind(this));
@@ -74,12 +74,12 @@
        if(localStorage.cars){
            //vÃµtan stringi ja teen tagasi objektideks
            this.cars = JSON.parse(localStorage.cars);
-           console.log('laadisin localStorageist massiiivi ' + this.cars.length);
+           //console.log('laadisin localStorageist massiiivi ' + this.cars.length);
 
            //tekitan loendi htmli
            this.cars.forEach(function(car){
 
-               var new_car = new Car(car.mark, car.model, car.year);
+               var new_car = new Car(car.id, car.mark, car.model, car.year);
 
                var li = new_car.createHtmlElement();
                document.querySelector('.list-of-cars').appendChild(li);
@@ -96,21 +96,56 @@
 
      bindEvents: function(){
        document.querySelector('.add-new-car').addEventListener('click', this.addNewClick.bind(this));
-       document.querySelector('.change-car').addEventListener('click', this.changeNewClick.bind(this));
-       document.querySelector('.delete-car').addEventListener('click', this.deleteNewClick.bind(this));
 
        //kuulan trÃ¼kkimist otsikastis
        document.querySelector('#search').addEventListener('keyup', this.search.bind(this));
 
      },
 
+     deleteCar: function(event){
+       //Millele vajutasin SPAN
+       //console.log(event.target);
+       //Tema parent ehk mille sees on LI
+       //console.log(event.target.parentNode);
+       //Mille sees see on UL
+       //console.log(event.target.parentNode.parentNode);
+
+       //id
+       //console.log(event.target.dataset.id);
+
+       var c = confirm("Oled kindel?");
+
+       if(!c){
+         return;
+
+       }
+       console.log('kustutan');
+
+       var ul = event.target.parentNode.parentNode;
+       var li = event.target.parentNode;
+       var delete_id = event.target.dataset.id;
+
+       ul.removeChild(li);
+
+       for(var i = 0; i< this.cars.length; i++){
+
+         if(this.cars[i].id == delete_id){
+           this.cars.splice(i, 1);
+           break;
+         }
+       }
+       localStorage.setItem('cars', JSON.stringify(this.cars));
+
+
+     },
+
      search: function(event){
          //otsikasti vÃ¤Ã¤rtus
          var needle = document.querySelector('#search').value.toLowerCase();
-         console.log(needle);
+         //console.log(needle);
 
          var list = document.querySelectorAll('ul.list-of-cars li');
-         console.log(list);
+         //console.log(list);
 
          for(var i = 0; i < list.length; i++){
 
@@ -143,56 +178,11 @@
 
        //console.log(mark + ' ' + model);
        //1) tekitan uue Jar'i
-       var new_car = new Car(mark, model, year);
+       var new_car = new Car(guid(), mark, model, year);
 
        //lisan massiiivi purgi
        this.cars.push(new_car);
-       console.log(JSON.stringify(this.cars));
-       // JSON'i stringina salvestan localStorage'isse
-       localStorage.setItem('cars', JSON.stringify(this.cars));
-
-       // 2) lisan selle htmli listi juurde
-       var li = new_car.createHtmlElement();
-       document.querySelector('.list-of-cars').appendChild(li);
-
-
-     },
-     changeNewClick: function(event){
-
-
-       var mark = document.querySelector('.mark').value;
-       var model = document.querySelector('.model').value;
-       var year = document.querySelector('.year').value;
-
-
-       var new_car = new Car(mark, model, year);
-
-       //lisan massiiivi purgi
-       this.cars.push(new_car);
-       console.log(JSON.stringify(this.cars));
-       // JSON'i stringina salvestan localStorage'isse
-       localStorage.setItem('cars', JSON.stringify(this.cars));
-
-       // 2) lisan selle htmli listi juurde
-       var li = new_car.createHtmlElement();
-       document.querySelector('.list-of-cars').appendChild(li);
-
-
-     },
-     deleteNewClick: function(event){
-
-
-       var mark = document.querySelector('.mark').value;
-       var model = document.querySelector('.model').value;
-       var year = document.querySelector('.year').value;
-
-       //console.log(mark + ' ' + model);
-       //1) tekitan uue Jar'i
-       var delete_car = delete Car(mark, model, year);
-
-       //lisan massiiivi purgi
-       this.cars.push(delete_car);
-       console.log(JSON.stringify(this.cars));
+       //console.log(JSON.stringify(this.cars));
        // JSON'i stringina salvestan localStorage'isse
        localStorage.setItem('cars', JSON.stringify(this.cars));
 
@@ -207,7 +197,7 @@
 
        //kirjutan muuutujasse lehe nime, vÃµtan maha #
        this.currentRoute = location.hash.slice(1);
-       console.log(this.currentRoute);
+       //console.log(this.currentRoute);
 
        //kas meil on selline leht olemas?
        if(this.routes[this.currentRoute]){
@@ -238,7 +228,8 @@
 
    }; // MOOSIPURGI LÃ•PP
 
-   var Car = function(new_mark, new_model, new_year){
+   var Car = function(new_id, new_mark, new_model, new_year){
+     this.id = new_id;
      this.mark = new_mark;
      this.model = new_model;
      this.year = new_year;
@@ -266,10 +257,36 @@
 
        li.appendChild(span_with_content);
 
+       var span_delete = document.createElement('span');
+       span_delete.style.color = "red";
+       span_delete.style.cursor = "pointer";
+
+       //Kustutamiseks id kaasa
+       span_delete.setAttribute("data-id", this.id);
+
+       span_delete.innerHTML = " Delete";
+       li.appendChild(span_delete);
+
+       span_delete.addEventListener("click", Autopark.instance.deleteCar.bind(Autopark.instance));
        return li;
 
      }
    };
+
+   //Helper funktsioonid
+
+   function guid(){
+    var d = new Date().getTime();
+    if(window.performance && typeof window.performance.now === "function"){
+        d += performance.now(); //use high-precision timer if available
+    }
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+    }
 
    // kui leht laetud kÃ¤ivitan Moosipurgi rakenduse
    window.onload = function(){
