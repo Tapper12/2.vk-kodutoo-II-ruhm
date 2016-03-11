@@ -56,6 +56,7 @@
    Autopark.prototype = {
 
      init: function(){
+
        //console.log('Rakendus lÃ¤ks tÃ¶Ã¶le');
 
        //kuulan aadressirea vahetust
@@ -103,15 +104,6 @@
      },
 
      deleteCar: function(event){
-       //Millele vajutasin SPAN
-       //console.log(event.target);
-       //Tema parent ehk mille sees on LI
-       //console.log(event.target.parentNode);
-       //Mille sees see on UL
-       //console.log(event.target.parentNode.parentNode);
-
-       //id
-       //console.log(event.target.dataset.id);
 
        var c = confirm("Oled kindel?");
 
@@ -140,6 +132,9 @@
      },
 
      search: function(event){
+
+       var found = 0;
+
          //otsikasti vÃ¤Ã¤rtus
          var needle = document.querySelector('#search').value.toLowerCase();
          //console.log(needle);
@@ -164,6 +159,8 @@
                  li.style.display = 'none';
 
              }
+             if(li.style.display == 'list-item'){found++;}
+             document.querySelector('#found').innerHTML='Leitud: '+found;
 
          }
      },
@@ -238,7 +235,6 @@
 
    Car.prototype = {
      createHtmlElement: function(){
-
        var li = document.createElement('li');
 
        var span = document.createElement('span');
@@ -269,6 +265,7 @@
 
        span_delete.addEventListener("click", Autopark.instance.deleteCar.bind(Autopark.instance));
        return li;
+
 
      }
    };
