@@ -9,6 +9,7 @@
      }
      //this viitab Moosipurk fn
      Autopark.instance = this;
+     this.car_types = null;
 
      this.routes = Autopark.routes;
      // this.routes['home-view'].render()
@@ -84,6 +85,7 @@
 
                var li = new_car.createHtmlElement();
                document.querySelector('.list-of-cars').appendChild(li);
+
 
            });
 
@@ -172,6 +174,7 @@
        var mark = document.querySelector('.mark').value;
        var model = document.querySelector('.model').value;
        var year = document.querySelector('.year').value;
+       var type = document.querySelector('#car_type').value;
 
        //console.log(mark + ' ' + model);
        //1) tekitan uue Jar'i
@@ -187,6 +190,19 @@
        var li = new_car.createHtmlElement();
        document.querySelector('.list-of-cars').appendChild(li);
 
+       var trucks = 0;
+       var small_cars = 0;
+       for(var i = 0; i < this.cars.length; ++i){
+         if(this.cars[i].value == "#truck"){
+           trucks++;
+         }
+         if(this.cars[i].value == "#small_car"){
+           small_cars++;
+         }
+       }
+       document.querySelector('#All').innerHTML = "Kokku on autosid: " + this.cars.length;
+       document.querySelector('#trucks').innerHTML = "Veoautosid: " + trucks;
+       document.querySelector('#small-cars').innerHTML = "Sõiduautosid: " + small_cars;
 
      },
 
