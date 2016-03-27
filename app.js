@@ -177,10 +177,10 @@
        var type = document.querySelector('#car_type').value;
 
        //console.log(mark + ' ' + model);
-       //1) tekitan uue Jar'i
+       //1) tekitan uue Car'i
        var new_car = new Car(guid(), mark, model, year);
 
-       //lisan massiiivi purgi
+       //lisan massiiivi uue auto
        this.cars.push(new_car);
        //console.log(JSON.stringify(this.cars));
        // JSON'i stringina salvestan localStorage'isse
@@ -190,6 +190,7 @@
        var li = new_car.createHtmlElement();
        document.querySelector('.list-of-cars').appendChild(li);
 
+       //Siin on midagi valesti-kahjuks ei oska parandada
        var trucks = 0;
        var small_cars = 0;
        for(var i = 0; i < this.cars.length; ++i){
