@@ -178,7 +178,7 @@
 
        //console.log(mark + ' ' + model);
        //1) tekitan uue Car'i
-       var new_car = new Car(guid(), mark, model, year);
+       var new_car = new Car(guid(), mark, model, year, type);
 
        //lisan massiiivi uue auto
        this.cars.push(new_car);
@@ -194,10 +194,10 @@
        var trucks = 0;
        var small_cars = 0;
        for(var i = 0; i < this.cars.length; ++i){
-         if(this.cars[i].value == "#truck"){
+         if(this.cars[i].type == "truck"){
            trucks++;
          }
-         if(this.cars[i].value == "#small_car"){
+         if(this.cars[i].type == "small-car"){
            small_cars++;
          }
        }
@@ -242,11 +242,12 @@
 
    }; // MOOSIPURGI LÃ•PP
 
-   var Car = function(new_id, new_mark, new_model, new_year){
+   var Car = function(new_id, new_mark, new_model, new_year, new_type){
      this.id = new_id;
      this.mark = new_mark;
      this.model = new_model;
      this.year = new_year;
+     this.type = new_type;
      console.log('created new Car');
    };
 
@@ -265,7 +266,11 @@
        var span_with_content = document.createElement('span');
        span_with_content.className = 'content';
 
-       var content = document.createTextNode(this.mark + ' | ' + this.model + ' | ' + this.year);
+       var type = "Sõiduauto";
+
+
+
+       var content = document.createTextNode(this.mark + ' | ' + this.model + ' | ' + this.year + ' | ' + this.type);
        span_with_content.appendChild(content);
 
        li.appendChild(span_with_content);
